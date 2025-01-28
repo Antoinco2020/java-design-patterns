@@ -1,5 +1,6 @@
 package it.model.integration.example.registry;
 
+import it.model.integration.example.manager.VersionComparator;
 import it.model.integration.example.model.MLModel;
 
 import java.util.HashMap;
@@ -20,12 +21,13 @@ public class VersionedModelRegistry {
         return registry.getOrDefault(modelName, new HashMap<>()).get(version);
     }
 
-    public String getLatestVersion(String modelName) {
-        return registry.getOrDefault(modelName, new HashMap<>())
-                .keySet()
-                .stream()
-                .sorted()
-                .reduce((first, second) -> second)
+    public String getLatestCompatibleVersion(String modelName, String targetVersion) {
+        Map<String, MLModel> versions = registry.get(modelName);
+        if (versions == null) return null;
+
+        return versions.keySet().stream()
+                .filter(version -> VersionComparator.isCompatible(version, targetVersion))  // Verifica compatibilità
+                .max(VersionComparator::compare)  // Restituisce la versione più alta
                 .orElse(null);
     }
 }
