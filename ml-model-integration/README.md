@@ -1,4 +1,4 @@
-**Design Pattern: ML Integration Pattern**
+# **Design Pattern: ML Integration Pattern**
 
 **General Description**
 
